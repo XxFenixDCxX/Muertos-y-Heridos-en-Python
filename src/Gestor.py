@@ -82,8 +82,8 @@ class Gestor:
 
     def registroUsuario(self, usuario: Usuario):
         # Registra un nuevo usuario con puntos y tiempo iniciales y guarda la información en el fichero
-        usuario.puntos = None
-        usuario.tiempo = None
+        usuario.puntos = "None"
+        usuario.tiempo = "None"
         self.__usuarios.append(usuario)
         self.__reescribirFichero()
 
@@ -100,8 +100,8 @@ class Gestor:
                     if usuario.puntos == "None":
                         restaPorNones += 1
             while len(usuariosOrdenadosRanking) != len(self.__usuarios) - restaPorNones:
-                puntosMax = -10000000000000
-                tiempoMin = 1000000000
+                puntosMax = float('-inf')
+                tiempoMin = float('inf')
                 for usuario in self.__usuarios:
                     if isinstance(usuario, Usuario):
                         if (usuario.puntos != "None" and int(usuario.puntos) > puntosMax and usuario not in usuariosOrdenadosRanking) or \
@@ -119,8 +119,8 @@ class Gestor:
                     if usuario.tiempo == "None":
                         restaPorNones += 1
             while len(usuariosOrdenadosRanking) != len(self.__usuarios) - restaPorNones:
-                puntosMax = -1
-                tiempoMin = 1000000000
+                puntosMax = float('-inf')
+                tiempoMin = float('inf')
                 for usuario in self.__usuarios:
                     if isinstance(usuario, Usuario):
                         if (usuario.tiempo != "None" and int(usuario.tiempo) < tiempoMin and usuario not in usuariosOrdenadosRanking) or \

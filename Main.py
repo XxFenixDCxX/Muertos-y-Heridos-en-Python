@@ -32,9 +32,13 @@ print("Por favor, introduce tu usuario y contraseña para continuar (Si no está
 loginCorrecto = False
 while (loginCorrecto == False):
     usuarioLogin = Usuario(input("Introduce tu usuario: "))
-    if len(usuarioLogin.nombre) > 6:  # Se asegura de que el nombre de usuario no es demasiado largo
+    if len(usuarioLogin.nombre) > 6 and str(usuarioLogin.nombre).__contains__("*") == False:  # Se asegura de que el nombre de usuario no es demasiado largo
         contrasenaCorrecta = False
         print(rojo + "El usuario no puede tener más de 7 caracteres" + default)
+        input()
+        clear()
+    elif str(usuarioLogin.nombre).__contains__("*"):
+        print(rojo + "El usuario no puede contener *" + default)
         input()
         clear()
     elif gestor.comprobarUsuario(usuarioLogin.nombre):  # Comprueba si el usuario introducido existe
@@ -52,10 +56,17 @@ while (loginCorrecto == False):
     else:  # Si no existe el usuario introducido, le pregunta si desea registrarse
         registro = input("El usuario no existe, ¿deseas registrarte con ese usuario (S/N): ")
         if str(registro).lower() == "s":  # Comprueba si la elección es la de realizar el registro
-            usuarioLogin.contrasena = getpass.getpass("Introduce la contraseña para tu usuario (no se verá lo que escribes): ")
-            gestor.registroUsuario(usuarioLogin)  # Realiza el registro agregándolo al fichero
-            print(verde + "Usuario registrado con éxito" + default)
-            loginCorrecto = True
+            registro = False
+            while registro == False:
+                usuarioLogin.contrasena = getpass.getpass("Introduce la contraseña para tu usuario (no se verá lo que escribes): ")
+                if str(usuarioLogin.contrasena).__contains__("*"):
+                    registro = False
+                    print(rojo+"La contraseña no puede contener *"+default)
+                else:
+                    registro = True
+                    gestor.registroUsuario(usuarioLogin)  # Realiza el registro agregándolo al fichero
+                    print(verde + "Usuario registrado con éxito" + default)
+                    loginCorrecto = True
         else:
             clear()
             loginCorrecto = False
@@ -79,9 +90,9 @@ while opcion != 3:
             gestor.nuevoNumero()
             gestor.ganado = False
             intentos = 0
+            inicioTiempo = time.time()
             while True:
                 clear()
-                inicioTiempo = time.time()
                 if debuger:
                     print(gestor.numeroAdivinar)
                 numCorrecto = False
@@ -96,9 +107,9 @@ while opcion != 3:
                         print(rojo + "El número introducido tiene que ser de 4 dígitos, no puede estar repetido y ninguna de las 4 cifras puede ser la misma 2 veces" + default)
 
                 intentos += 1
-                puntos = gestor.INTENTOS*10 - intentos * 10
                 if gestor.ganado:
                     clear()
+                    puntos = gestor.INTENTOS*10 - intentos * 10
                     finalTiempo = time.time()
                     tiempoTotal = int(finalTiempo - inicioTiempo)
                     print(gestor.juego())
@@ -109,7 +120,7 @@ while opcion != 3:
                     guardar = 0
                     while guardar != 1 and guardar != 2:
                         try:
-                            guardar = int(input("¿Deseas registrar esta partida o quedarte con tus puntos y tiempo actuales? 1.-Si 2.-No: "))
+                            guardar = int(input("¿Deseas registrar esta partida o quedarte con tus puntos y tiempo actuales? (Los puntos se suman el tiempo se sobreescribe) 1.-Si 2.-No: "))
                             if guardar != 1 and guardar != 2:
                                 print(rojo + "La opción elegida no es correcta, introduce 1 o 2" + default)
                             elif guardar == 1:
